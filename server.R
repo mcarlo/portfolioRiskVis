@@ -1,31 +1,36 @@
 # server.R
-assets <- c("Treasuries",
-            "TIPS",
-            "Corp. Bonds",
-            "US Stocks",
-            "Int'l Stocks",
-            "Commodities")
+Asset <- c("Commodities","Int'l Stocks","US Stocks","Corp. Bonds","TIPS","Treasuries"
+                        )
 
-volatilities <- c(0.07, 0.1, 0.12, 0.2, 0.2, 0.3)
+Volatility <- c(0.3, .2, .2, .12, .1, .07)
+volDF <- data.frame(Volatility)
+rownames(volDF) <- Asset
 
-correlations <- matrix(cbind(c(1.00,0.95,0.60,0.10,0.10,0.10),
-                             c(0.95,1.00,0.65,0.10,0.10,0.10),
-                             c(0.60,0.65,1.00,0.35,0.35,0.20),
-                             c(0.10,0.10,0.35,1.00,0.70,0.10),
-                             c(0.10,0.10,0.35,0.70,1.00,0.15),
-                             c(0.10,0.10,0.20,0.10,0.15,1.00)), nrow = 6, 
-                       ncol = 6)
+correlations <- matrix(cbind(c(1, 0.15, 0.1, 0.2, 0.1, 0.1),
+                             c(0.15, 1, 0.7, 0.35, 0.1, 0.1),
+                             c(0.1, 0.7, 1, 0.35, 0.1, 0.1),
+                             c(0.2, 0.35, 0.35, 1, 0.65, 0.6),
+                             c(0.1, 0.1, 0.1, 0.65, 1, 0.95),
+                             c(0.1, 0.1, 0.1, 0.6, 0.95, 1)), nrow = 6)
 
-covariances <- correlations * (volatilities %*% t(volatilities))
+colnames(correlations) <- Asset
+rownames(correlations) <- Asset
+
+covariances <- correlations * (Volatility %*% t(Volatility))
 
 axisLabels <- seq(0, 1.0, .05)
 
 shinyServer(function(input, output) {
   
-  weights <- reactive({
-    c(input$treas, input$tips, input$corp, input$us, input$intl, 
-      input$commod)/100
+  portfolioValue <- reactive({
+    sum(input$commod, input$intl, input$us, input$corp, input$tips, input$treas)
   })
+
+  weights <- reactive({
+    c(input$commod, input$intl, input$us, input$corp, input$tips, input$treas)/
+      max(1, portfolioValue ())
+  })
+  
   
   contributions <- reactive({
     weights() * (covariances %*% weights())
@@ -49,12 +54,19 @@ shinyServer(function(input, output) {
             col = "black", yaxt = "n")
     axis(1, at = axisLabels, lab=paste0(axisLabels * 100, " %"), 
          las=TRUE, cex.axis=1, padj = 0.5)
-    axis(4, at=c(0.85,2,3.15,4.3,5.45,6.5), lab = assets , las=TRUE, lty = 0)
     barplot(t(risk_contributions()), 
             main = "Contribution to Portfolio Risk", col = "red", xaxt = "n", 
             yaxt = "n", horiz = TRUE)
     axis(1, at = axisLabels, lab=paste0(axisLabels * 100, " %"), 
          las=TRUE, cex.axis=1, padj = 0.5)
+    axis(2, at=c(0.85,2,3.15,4.3,5.45,6.5), lab = Asset , las=TRUE, lty = 0)
   })
-  
+
+  # Generate an HTML table view of the data
+  output$table1 <- renderTable({
+    volDF
+  })
+  output$table2 <- renderTable({
+    data.frame(correlations)
+  })
 })

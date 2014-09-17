@@ -1,41 +1,72 @@
 library(shiny)
 
 shinyUI(fluidPage(
-  titlePanel("portfolioRiskVis"),
+  titlePanel("portfolioRiskViz"),
   
   sidebarLayout(
     sidebarPanel(
-      helpText("Change the below to see how the portfolio risk composition 
-changes. "),
+      h5("Asset values"),
       
-      sliderInput("commod", "Commodities", value = 9.79, min = 0, max = 100, 
+      helpText("Change the asset values below to see how the portfolio risk composition 
+               changes. "),
+      
+      sliderInput("treas", "Treasuries", value = 30.26, min = 0, max = 100, step = .01),
+      
+      sliderInput("tips", "TIPS", value = 20.85, min = 0, max = 100, step = .01),
+      
+      sliderInput("corp", "Corp. Bonds", value = 15.70, min = 0, max = 100, 
+                  step = .01),
+      
+      sliderInput("us", "US Stocks", value = 11.84, min = 0, max = 100, 
                   step = .01),
       
       sliderInput("intl", "Int'l Stocks", value = 11.56, min = 0, max = 100, 
                   step = .01),
-
-      sliderInput("us", "US Stocks", value = 11.84, min = 0, max = 100, 
-                  step = .01),
-
-      sliderInput("corp", "Corp. Bonds", value = 15.70, min = 0, max = 100, 
-                  step = .01),
       
-      sliderInput("tips", "TIPS", value = 20.85, min = 0, max = 100, step = .01),
+      sliderInput("commod", "Commodities", value = 9.79, min = 0, max = 100, 
+                  step = .01)
       
-      sliderInput("treas", "Treasuries", value = 30.26, min = 0, max = 100, step = .01)
-      
-    ),
-
+      ),
+    
     mainPanel(
-      p("The charts below depict your selected portfolio weights and
-  relative contributions to portfolio risk."),
-      
-      
-      plotOutput("plot"),
-    
-      p("The initial weights were chosen so the Contributions to Risk would be 
-equal, an allocation technique known as ", em("risk parity."))
-    ),
-    
+      tabsetPanel(
+        tabPanel("Portfolio Composition", p("The charts below depict your selected portfolio weights and
+                                            relative contributions to portfolio risk."),
+                 
+                 
+                 plotOutput("plot"),
+                 
+                 p("The initial weights were chosen so the Contributions to Risk would be 
+                   equal, an allocation technique known as ", 
+                   a("risk parity.", href = "http://www.portfoliowizards.com/risk-parity-demo-workbook/"))), 
+        tabPanel("Assumptions", 
+                 h6("Annualized Volatility"),
+                 tableOutput("table1"),
+                 h6("Correlation coefficients"),
+                 tableOutput("table2") ),
+        tabPanel("Notes", 
+                 h6("The role of risk contribution in portfolio construction"),
+                 p("Contribution to portfolio risk is the product of an asset's 
+                   portfolio weight and its covariance with the portfolio. This
+                   measure holds a key role in portfolio optimization. When the 
+                   investor is not subject to any portfolio constraints, an 
+                   optimal growth portfolio (also known as a ", em("maximum 
+                                                                   Sharpe Ratio"), 
+                   " portfolio) will have the condition that all assets' 
+                   contribution to the portfolio's excess return are 
+                   proportionate to their contribution to portfolio risk."
+                   ),
+                 br(),
+                 h6("Assets"),
+                 p("Treasuries: US Treasury Notes and Bonds, spanning maturities
+                   from short to long"),
+                 p("TIPS: Treasury Inflation-Protected Securities"),
+                 p("Corp. Bonds: Investment grade US Corporate bonds"),
+                 p("US Stocks: US stocks, spanning all market capitalizations"),
+                 p("Int'l Stocks: Developed market non-US stocks"),
+                 p("Commodities: broad basket commodities futures")
+                 )
+        )
+                 )
   )
 ))
