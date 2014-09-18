@@ -7,9 +7,6 @@ shinyUI(fluidPage(
     sidebarPanel(
       h5("Asset values"),
       
-      helpText("Change the asset values below to see how the portfolio risk composition 
-               changes. "),
-      
       sliderInput("treas", "Treasuries", value = 30.26, min = 0, max = 100, step = .01),
       
       sliderInput("tips", "TIPS", value = 20.85, min = 0, max = 100, step = .01),
@@ -29,16 +26,25 @@ shinyUI(fluidPage(
       ),
     
     mainPanel(
+      wellPanel(h3("Visualize portfolio risk dynamics"),
+
+p("You are in charge of investing a portfolio with initial value 100, allocated
+according to the values on the left. You have access to more capital, that is,
+  you may invest up to 100 in each of the six asset classes listed."), 
+p("Change the asset values on the left to see how the portfolio risk composition
+  changes. ")),
+      
       tabsetPanel(
-        tabPanel("Portfolio Composition", p("The charts below depict your selected portfolio weights and
-                                            relative contributions to portfolio risk."),
+        tabPanel("Portfolio Composition", 
                  
                  
                  plotOutput("plot"),
                  
                  p("The initial weights were chosen so the Contributions to Risk would be 
                    equal, an allocation technique known as ", 
-                   a("risk parity.", href = "http://www.portfoliowizards.com/risk-parity-demo-workbook/"))), 
+                   a("risk parity.", 
+                     href = "http://www.portfoliowizards.com/risk-parity-demo-workbook/")),
+                 plotOutput("plot2")),
         tabPanel("Assumptions", 
                  h6("Annualized Volatility"),
                  tableOutput("table1"),

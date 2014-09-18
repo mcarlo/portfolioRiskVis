@@ -28,7 +28,7 @@ shinyServer(function(input, output) {
 
   weights <- reactive({
     c(input$commod, input$intl, input$us, input$corp, input$tips, input$treas)/
-      max(1, portfolioValue ())
+      max(1, portfolioValue())
   })
   
   
@@ -48,6 +48,11 @@ shinyServer(function(input, output) {
     contributions()/sum(contributions())    
   })
   
+  risk <- reactive({data.frame(cbind(Volatility, weights(), covariances,
+                                     risk_contributions()))})
+  
+  riskDF <- data.frame(cbind(risk, Asset))
+  
   output$plot <- renderPlot({
     par(mfcol = c(1,2))
     barplot(t(weights()), horiz = TRUE, main = "Portfolio Weight", xaxt = "n", 
@@ -61,7 +66,15 @@ shinyServer(function(input, output) {
          las=TRUE, cex.axis=1, padj = 0.5)
     axis(2, at=c(0.85,2,3.15,4.3,5.45,6.5), lab = Asset , las=TRUE, lty = 0)
   })
-
+  
+  output$plot2 <- renderPlot({
+    symbols(Volatility, weights(), circles=(contributions()), 
+            fg="white", bg="red", xlim = c(0, .35), ylim = c(0, 1),
+            xlab = "Volatility \n (Annualized standard deviation)",
+    ylab = "Weight (%)")
+    text(Volatility, weights(), Asset, cex=1.)
+  })
+  
   # Generate an HTML table view of the data
   output$table1 <- renderTable({
     volDF
