@@ -2,9 +2,26 @@ library(shiny)
 
 shinyUI(fluidPage(
   titlePanel("portfolioRiskViz"),
+  h1("Visualize portfolio risk dynamics", align = "center"),
+  wellPanel(
+            
+            p("You are in charge of investing a portfolio with initial value 100, allocated
+              according to the values on the left. You have access to more capital, that is,
+              you may invest up to 100 in each of the six asset classes listed."), 
+            p("Change the asset values on the left to see how the portfolio risk composition
+              changes. ")),
+  
   
   sidebarLayout(
     sidebarPanel(
+      #radioButtons("radio", 
+      #                   label = h3("Allocation type"), 
+      #                   choices = list("Equal Weight" = 1, 
+      #                                  "Minimum Variance" = 2, "Maximum Sharpe
+      #                                  Ratio" = 3, "Risk Parity" = 4, "Manual"
+      #                                   = 5),
+      #                   selected = 3),
+    
       h5("Asset values"),
       
       sliderInput("treas", "Treasuries", value = 30.26, min = 0, max = 100, step = .01),
@@ -26,30 +43,23 @@ shinyUI(fluidPage(
       ),
     
     mainPanel(
-      wellPanel(h3("Visualize portfolio risk dynamics"),
-
-p("You are in charge of investing a portfolio with initial value 100, allocated
-according to the values on the left. You have access to more capital, that is,
-  you may invest up to 100 in each of the six asset classes listed."), 
-p("Change the asset values on the left to see how the portfolio risk composition
-  changes. ")),
-      
       tabsetPanel(
         tabPanel("Portfolio Composition", 
-                 
-                 
+                 h5("Weight, Contributions to Portfolio Risk, 
+                    \n and Contributions to Portfolio Return", align = "center"), 
                  plotOutput("plot"),
                  
                  p("The initial weights were chosen so the Contributions to Risk would be 
                    equal, an allocation technique known as ", 
                    a("risk parity.", 
                      href = "http://www.portfoliowizards.com/risk-parity-demo-workbook/")),
+                 
                  plotOutput("plot2")),
         tabPanel("Assumptions", 
                  h6("Annualized Volatility"),
                  tableOutput("table1"),
                  h6("Correlation coefficients"),
-                 tableOutput("table2") ),
+                 tableOutput("table2")),
         tabPanel("Notes", 
                  h6("The role of risk contribution in portfolio construction"),
                  p("Contribution to portfolio risk is the product of an asset's 
