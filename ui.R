@@ -4,7 +4,9 @@ shinyUI(fluidPage(
   titlePanel("portfolioRiskViz"),
   h1("Visualize portfolio risk dynamics", align = "center"),
   tags$head(includeScript("google-analytics.js")),
-  
+  tags$head( tags$script(src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML-full", type = 'text/javascript'),
+             tags$script( "MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});", type='text/x-mathjax-config')
+  ),  
   wellPanel(
     p("Do you understand how the risk in your portfolio changes if you 
               change the weights of your assets?"),
@@ -102,16 +104,23 @@ portfolio expected return to risk is maximized."),
                  h6("Correlation coefficients"),
                  tableOutput("table2")),
         tabPanel("Definitions", 
-                 h6("Weight"),
-                 p("100 * (Asset Value / sum of Asset Values)"
-                   ),
+                 
+                 h4("Risk Contribution"),
+                 p("Product of Asset's Weight and its covariance with the
+                   Portfolio, scaled by the Portfolio's variance"),
+                 
+#                 h2(HTML("$$ weight_{Asset} * \\sigma_{Asset, Portfolio} / \\sigma^{2}_{Portfolio}  $$" )),
                  br(),
-                 h6("Risk Contribution"),
-                 p("Weight * covariance(Asset, Portfolio) / Portfolio Variance"),
-                 br(),
-                 h6("Return Contribution"),
-                 p("Weight / 100 * Expected Return")
-                 )
+                 h4("Return Contribution"),
+        p("Product of Asset's Weight and its Expected Return"),
+#        h2(HTML("$$ weight_{Asset} * e(Return_{Asset} ) $$" )),
+        br(),
+        h4("Sharpe Ratio"),
+        p("Ratio of portfolio's Expected Return to its Standard Deviation"),
+#        h2(HTML("$$ e(Return_{Asset} ) / \\sigma_{Asset} $$" )),
+        p("Technically this is simply a \"Return/Risk  ratio,\" which is not exactly the same as \"Sharpe Ratio,\" but the terms are frequently used interchangeably and  for the purpose of this application their meanings are similar enough. If you would like to know the precise definition of \"Sharpe Ratio,\" ", a(href = "http://web.stanford.edu/~wfsharpe/art/sr/sr.htm", "consult the source.")  ),
+        br()
+        )
         )
                  )
   ),

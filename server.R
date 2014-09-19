@@ -146,7 +146,7 @@ shinyServer(function(input, output) {
   })
   
   output$plot2 <- renderPlot({
-    plot(portfolio_std(), portfolio_return(), pch = "P", cex = 3, col = "red", 
+    plot(portfolio_std(), portfolio_return(), pch = 19, cex = 1.5, col = "red", 
          xlim = c(0, .35), ylim = c(0, 0.1), xlab = "Volatility 
          \n (Annualized standard deviation)", xaxt = "n", ylab = "Expected Return",
          yaxt = "n", main = "Portfolio Expected Return \n vs. Risk", ps = 12, 
@@ -154,6 +154,7 @@ shinyServer(function(input, output) {
          oma = c(4,4,0.5,0.5) + .1)
     points(Volatility, Expected_Return, pch = 19)
     text(Volatility, Expected_Return, labels=Asset, cex= 1., pos=4)
+    text(portfolio_std(), portfolio_return(), labels="Portfolio", cex= 1.5, col = "red", pos=4)
     axis(1, at = rrLabelsX, lab=paste0(rrLabelsX * 100, " %"), las=TRUE)
     axis(2, at = rrLabelsY, lab=paste0(rrLabelsY * 100, " %"), las=TRUE)
   })
@@ -181,7 +182,7 @@ shinyServer(function(input, output) {
   
   output$plotRP2 <- renderPlot({
     par(mfcol = c(1,1), oma = c(0.5, 5, 0.5, 0.5))
-    plot(portfolio_stdRP, portfolio_returnRP, pch = "P", cex = 3, col = "red", 
+    plot(portfolio_stdRP, portfolio_returnRP,  pch = 19, cex = 1.5, col = "red", 
          xlim = c(-0.05, .40), ylim = c(0, 0.1), xlab = "\n \n Volatility 
          \n (Annualized standard deviation)", xaxt = "n", ylab = "Expected Return",
          yaxt = "n", main = "Portfolio Expected Return \n vs. Risk", ps = 12, 
@@ -189,6 +190,7 @@ shinyServer(function(input, output) {
          oma = c(4,4,0.5,0.5) + .1)
     points(Volatility, Expected_Return, pch = 19)
     text(Volatility, Expected_Return, labels=Asset, cex= 1., pos=4)
+    text(portfolio_stdRP, portfolio_returnRP, labels="Risk Parity", cex= 1.5, col = "red", pos=4)
     axis(1, at = rrLabelsX, lab=paste0(rrLabelsX * 100, " %"), las=TRUE)
     axis(2, at = rrLabelsY, lab=paste0(rrLabelsY * 100, " %"), las=TRUE)
   })
@@ -215,7 +217,7 @@ shinyServer(function(input, output) {
   })
   
   output$plotminVar2 <- renderPlot({
-    plot(portfolio_stdminVar, portfolio_returnminVar, pch = "P", cex = 3, col = "red", 
+    plot(portfolio_stdminVar, portfolio_returnminVar,  pch = 19, cex = 1.5, col = "red",  
          xlim = c(-0.05, .4), ylim = c(0, 0.1), xlab = "Volatility 
          \n (Annualized standard deviation)", xaxt = "n", ylab = "Expected Return",
          yaxt = "n", main = "Portfolio Expected Return \n vs. Risk", ps = 12, 
@@ -223,6 +225,7 @@ shinyServer(function(input, output) {
          oma = c(4,4,0.5,0.5) + .1)
     points(Volatility, Expected_Return, pch = 19)
     text(Volatility, Expected_Return, labels=Asset, cex= 1., pos=4)
+    text(portfolio_stdminVar, portfolio_returnminVar, labels="MinVar", cex= 1.5, col = "red", pos=4)
     axis(1, at = rrLabelsX, lab=paste0(rrLabelsX * 100, " %"), las=TRUE)
     axis(2, at = rrLabelsY, lab=paste0(rrLabelsY * 100, " %"), las=TRUE)
   })
@@ -249,7 +252,7 @@ shinyServer(function(input, output) {
   })
   
   output$plotmaxSharpe2 <- renderPlot({
-    plot(portfolio_stdmaxSharpe, portfolio_returnmaxSharpe, pch = "P", cex = 3, col = "red", 
+    plot(portfolio_stdmaxSharpe, portfolio_returnmaxSharpe,  pch = 19, cex = 1.5, col = "red", 
          xlim = c(-0.05, .4), ylim = c(0, 0.1), xlab = "Volatility 
          \n (Annualized standard deviation)", xaxt = "n", ylab = "Expected Return",
          yaxt = "n", main = "Portfolio Expected Return \n vs. Risk", ps = 12, 
@@ -257,6 +260,7 @@ shinyServer(function(input, output) {
          oma = c(4,4,0.5,0.5) + .1)
     points(Volatility, Expected_Return, pch = 19)
     text(Volatility, Expected_Return, labels=Asset, cex= 1., pos=4)
+    text(portfolio_stdmaxSharpe, portfolio_returnmaxSharpe, labels="Max Sharpe", cex= 1.5, col = "red", pos=4)
     axis(1, at = rrLabelsX, lab=paste0(rrLabelsX * 100, " %"), las=TRUE)
     axis(2, at = rrLabelsY, lab=paste0(rrLabelsY * 100, " %"), las=TRUE)
   })
