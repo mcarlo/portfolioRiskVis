@@ -13,31 +13,24 @@ shinyUI(fluidPage(
   
   sidebarLayout(
     sidebarPanel(
-      #radioButtons("radio", 
-      #                   label = h3("Allocation type"), 
-      #                   choices = list("Equal Weight" = 1, 
-      #                                  "Minimum Variance" = 2, "Maximum Sharpe
-      #                                  Ratio" = 3, "Risk Parity" = 4, "Manual"
-      #                                   = 5),
-      #                   selected = 3),
     
       h5("Asset values"),
       
-      sliderInput("treas", "Treasuries", value = 16.67, min = 0, max = 100, step = .01),
-      
-      sliderInput("tips", "TIPS", value = 16.67, min = 0, max = 100, step = .01),
-      
-      sliderInput("corp", "Corp. Bonds", value = 16.66, min = 0, max = 100, 
+      sliderInput("commod", "Commodities", value = 20, min = 0, max = 100, 
                   step = .01),
       
-      sliderInput("us", "US Stocks", value = 16.67, min = 0, max = 100, 
+      sliderInput("reit", "REITs", value = 20, min = 0, max = 100, step = .01),
+      
+      sliderInput("bond", "Bonds", value = 20, min = 0, max = 100, 
+                  step = .01),
+            
+      sliderInput("intl", "Int'l Stocks", value = 20, min = 0, max = 100, 
                   step = .01),
       
-      sliderInput("intl", "Int'l Stocks", value = 16.67, min = 0, max = 100, 
-                  step = .01),
-      
-      sliderInput("commod", "Commodities", value = 16.66, min = 0, max = 100, 
+      sliderInput("us", "US Stocks", value = 20, min = 0, max = 100, 
                   step = .01)
+      
+
       
       ),
     
@@ -62,8 +55,11 @@ shinyUI(fluidPage(
                  h5("Weight, Contributions to Portfolio Risk, 
                     \n and Contributions to Portfolio Return", align = "center"), 
                  plotOutput("plotminVar"),
+                 h5("Notice the Weight and Risk Contribution plots are shaped identically. This is a feature of Minimum Variance portfolios: Weights are proportionate to Contributions to Risk.", align = "left"), 
                  
                  plotOutput("plotminVar2")),
+        h5("Notice the total portfolio has a lower volatility than its least risky asset. This is possible due to diversification and, in this case, short-selling International Stocks.", align = "left"), 
+        
         
         tabPanel("Maximum Sharpe Ratio portfolio", 
                  p("This panel is not reactive, it is for illustration
@@ -74,6 +70,7 @@ portfolio expected return to risk is maximized."),
                  h5("Weight, Contributions to Portfolio Risk, 
                     \n and Contributions to Portfolio Return", align = "center"), 
                  plotOutput("plotmaxSharpe"),
+                 h5("Notice here the Risk Contribution and Return Contribution plots are shaped identically. This is a feature of unconstrained Maximum Sharpe Ratio portfolios: Contributions to Risk are pproportionate to Contributions to Return.", align = "left"), 
                  
                  plotOutput("plotmaxSharpe2")),
         
@@ -88,6 +85,7 @@ portfolio expected return to risk is maximized."),
                  h5("Weight, Contributions to Portfolio Risk, 
                     \n and Contributions to Portfolio Return", align = "center"), 
                  plotOutput("plotRP"),
+                 h5("Notice here the Risk Contributions are equal. Investors debate about the merits of such an allocation. One of the best arguments supporting Risk Parity is it minimizes your exposure to misestimation risk.", align = "left"), 
                  
                  plotOutput("plotRP2")),
         tabPanel("Assumptions", 
