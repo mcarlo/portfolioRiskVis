@@ -7,9 +7,8 @@ shinyUI(fluidPage(
             
             p("You are in charge of investing a portfolio with initial value 100, allocated
               according to the values on the left. You have access to more capital, that is,
-              you may invest up to 100 in each of the six asset classes listed."), 
-            p("Change the asset values on the left to see how the portfolio risk composition
-              changes. ")),
+              you may invest up to 100 in each of the six asset classes listed.")
+),
   
   
   sidebarLayout(
@@ -24,20 +23,20 @@ shinyUI(fluidPage(
     
       h5("Asset values"),
       
-      sliderInput("treas", "Treasuries", value = 30.26, min = 0, max = 100, step = .01),
+      sliderInput("treas", "Treasuries", value = 16.67, min = 0, max = 100, step = .01),
       
-      sliderInput("tips", "TIPS", value = 20.85, min = 0, max = 100, step = .01),
+      sliderInput("tips", "TIPS", value = 16.67, min = 0, max = 100, step = .01),
       
-      sliderInput("corp", "Corp. Bonds", value = 15.70, min = 0, max = 100, 
+      sliderInput("corp", "Corp. Bonds", value = 16.66, min = 0, max = 100, 
                   step = .01),
       
-      sliderInput("us", "US Stocks", value = 11.84, min = 0, max = 100, 
+      sliderInput("us", "US Stocks", value = 16.67, min = 0, max = 100, 
                   step = .01),
       
-      sliderInput("intl", "Int'l Stocks", value = 11.56, min = 0, max = 100, 
+      sliderInput("intl", "Int'l Stocks", value = 16.67, min = 0, max = 100, 
                   step = .01),
       
-      sliderInput("commod", "Commodities", value = 9.79, min = 0, max = 100, 
+      sliderInput("commod", "Commodities", value = 16.66, min = 0, max = 100, 
                   step = .01)
       
       ),
@@ -45,16 +44,52 @@ shinyUI(fluidPage(
     mainPanel(
       tabsetPanel(
         tabPanel("Portfolio Composition", 
+                 p("This panel is reactive. Change the asset values on the left to see how the portfolio risk composition
+              changes. "),                  
+                 
                  h5("Weight, Contributions to Portfolio Risk, 
                     \n and Contributions to Portfolio Return", align = "center"), 
                  plotOutput("plot"),
                  
-                 p("The initial weights were chosen so the Contributions to Risk would be 
+                 plotOutput("plot2")),
+        
+        tabPanel("Minimum Variance portfolio", 
+                 p("This panel is not reactive, it is for illustration
+                   purposes only."),
+                 p("The weights below were selected such that portfolio
+                   variances is minimized"),
+                 
+                 h5("Weight, Contributions to Portfolio Risk, 
+                    \n and Contributions to Portfolio Return", align = "center"), 
+                 plotOutput("plotminVar"),
+                 
+                 plotOutput("plotminVar2")),
+        
+        tabPanel("Maximum Sharpe Ratio portfolio", 
+                 p("This panel is not reactive, it is for illustration
+                   purposes only."),
+                 p("The weights below were selected such that the ratio of
+portfolio expected return to risk is maximized."),
+                 
+                 h5("Weight, Contributions to Portfolio Risk, 
+                    \n and Contributions to Portfolio Return", align = "center"), 
+                 plotOutput("plotmaxSharpe"),
+                 
+                 plotOutput("plotmaxSharpe2")),
+        
+        tabPanel("Risk Parity portfolio", 
+                 p("This panel is not reactive, it is for illustration
+                    purposes only."),
+                 p("The weights below were selected such that the Contributions to Risk would be 
                    equal, an allocation technique known as ", 
                    a("risk parity.", 
                      href = "http://www.portfoliowizards.com/risk-parity-demo-workbook/")),
                  
-                 plotOutput("plot2")),
+                 h5("Weight, Contributions to Portfolio Risk, 
+                    \n and Contributions to Portfolio Return", align = "center"), 
+                 plotOutput("plotRP"),
+                 
+                 plotOutput("plotRP2")),
         tabPanel("Assumptions", 
                  h6("Annualized Volatility"),
                  tableOutput("table1"),
