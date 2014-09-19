@@ -182,7 +182,7 @@ shinyServer(function(input, output) {
   output$plotRP2 <- renderPlot({
     par(mfcol = c(1,1), oma = c(0.5, 5, 0.5, 0.5))
     plot(portfolio_stdRP, portfolio_returnRP, pch = "P", cex = 3, col = "red", 
-         xlim = c(0, .40), ylim = c(0, 0.1), xlab = "\n \n Volatility 
+         xlim = c(-0.05, .40), ylim = c(0, 0.1), xlab = "\n \n Volatility 
          \n (Annualized standard deviation)", xaxt = "n", ylab = "Expected Return",
          yaxt = "n", main = "Portfolio Expected Return \n vs. Risk", ps = 12, 
          cex.main = 1.5, mar = c(4,14,0.5,0.5) + .1,
