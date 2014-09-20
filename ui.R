@@ -1,5 +1,5 @@
 library(shiny)
-
+withMathJax()
 shinyUI(fluidPage(
   titlePanel("portfolioRiskViz"),
   h1("Visualize portfolio risk dynamics", align = "center"),
@@ -8,12 +8,8 @@ shinyUI(fluidPage(
              tags$script( "MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});", type='text/x-mathjax-config')
   ),  
   wellPanel(
-    p("Do you understand how the risk in your portfolio changes if you 
-              change the weights of your assets?"),
-    
-    p("Imagine you are in charge of investing a portfolio with initial value 100, allocated
-              according to the values on the left. You have access to more capital, that is,
-              you may invest up to 100 in each of the Asset Classes listed.")
+    p("This application illustrates how the risk in a portfolio changes when you 
+              change the asset allocation.")
     
 ),
   
@@ -21,7 +17,7 @@ shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(
       p("Change the Asset Values below to see how the riskiness and risk composition
-of your portfolio change in the Portfolio Composition panel."),
+of the portfolio change in the Portfolio Composition panel."),
       p("The other panels are for background and illustration purposes; they will not change."),
       
       h5("Asset values"),
@@ -47,55 +43,53 @@ of your portfolio change in the Portfolio Composition panel."),
     mainPanel(
       tabsetPanel(
         tabPanel("Portfolio Composition", 
-                 p("This panel is reactive. Change the asset values on the left to see how the portfolio risk composition
-              changes. "),                  
+                 p("This panel is reactive. Change the asset values on the left
+                   to see how the portfolio risk composition changes. Scroll
+                   down to see a Return/Risk plot."),                  
                  
-                 h5("Weight, Contributions to Portfolio Risk, 
-                    \n and Contributions to Portfolio Return", align = "center"), 
                  plotOutput("plot"),
                  
                  plotOutput("plot2")),
         
-        tabPanel("Minimum Variance portfolio", 
-                 p("This panel is not reactive, it is for illustration
-                   purposes only."),
-                 p("The weights below were selected such that portfolio
-                   variance is minimized"),
+        tabPanel("Min. Variance portfolio", 
+                 p("This panel is not reactive, it is for illustration purposes
+                   only. The weights were selected so as to minimize portfolio
+                   variance."),
+                 p("In unconstrained Minimum Variance Portfolios, the ",
+                   strong("Weights equal the Contributions to Risk."),
+                   align = "left"), 
                  
-                 h5("Weight, Contributions to Portfolio Risk, 
-                    \n and Contributions to Portfolio Return", align = "center"), 
                  plotOutput("plotminVar"),
-                 h5("Notice the Weight and Risk Contribution plots are shaped identically. This is a feature of Minimum Variance portfolios: Weights are proportionate to Contributions to Risk.", align = "left"), 
                  
                  plotOutput("plotminVar2"),
-        h5("Notice the total portfolio has a lower volatility than its least risky asset. This is possible due to diversification and, in this case, short-selling International Stocks.", align = "left")), 
+        h5("Notice the Minimum Variance Portfolio's volatility is less than that
+           of its least risky asset.", align = "left")), 
         
         
-        tabPanel("Maximum Sharpe Ratio portfolio", 
-                 p("This panel is not reactive, it is for illustration
-                   purposes only."),
-                 p("The weights below were selected such that the ratio of
-portfolio expected return to risk is maximized."), 
+        tabPanel("Max. Sharpe Ratio portfolio", 
+                 p("This panel is not reactive, it is for illustration purposes
+                   only. The weights were selected so as to maximize
+                   the portfolio's ratio of expected return to volatility."),
+                 p("In unconstrained Maximum Sharpe Ratio Portfolios, ", 
+                   strong("the Contributions to Risk are proportionate to
+                          Contributions to Return")," which is why the Risk
+                   Contribution pattern and Return Contribution pattern are
+                   identical.", align = "left"), 
                  
-                 h5("Weight, Contributions to Portfolio Risk, 
-                    \n and Contributions to Portfolio Return", align = "center"), 
+                 
                  plotOutput("plotmaxSharpe"),
-                 h5("Notice the Risk Contribution and Return Contribution plots are shaped identically. This is a feature of unconstrained Maximum Sharpe Ratio portfolios: Contributions to Risk are proportionate to Contributions to Return."),
                  
                  plotOutput("plotmaxSharpe2")),
         
         tabPanel("Risk Parity portfolio", 
                  p("This panel is not reactive, it is for illustration
-                    purposes only."),
-                 p("The weights below were selected such that the Contributions to Risk would be 
-                   equal, an allocation technique known as ", 
-                   a("risk parity.", 
+                    purposes only. The weights were selected such that the
+                   Contributions to Risk would be equal, an allocation technique
+                   known as ",
+                   a("risk parity.",
                      href = "http://www.portfoliowizards.com/risk-parity-demo-workbook/")),
                  
-                 h5("Weight, Contributions to Portfolio Risk, 
-                    \n and Contributions to Portfolio Return", align = "center"), 
                  plotOutput("plotRP"),
-                 h5("Notice the Risk Contributions are equal. Investors debate about the merits of such an allocation. One of the best arguments supporting Risk Parity is it minimizes your exposure to misestimation risk.", align = "left"), 
                  
                  plotOutput("plotRP2")),
         tabPanel("Assumptions", 
@@ -109,16 +103,23 @@ portfolio expected return to risk is maximized."),
                  p("Product of Asset's Weight and its covariance with the
                    Portfolio, scaled by the Portfolio's variance"),
                  
-#                 h2(HTML("$$ weight_{Asset} * \\sigma_{Asset, Portfolio} / \\sigma^{2}_{Portfolio}  $$" )),
+                 withMathJax(h2(HTML("$$ weight_{Asset} * \\sigma_{Asset, Portfolio}
+                                     / \\sigma^{2}_{Portfolio}  $$" ))),
                  br(),
                  h4("Return Contribution"),
         p("Product of Asset's Weight and its Expected Return"),
-#        h2(HTML("$$ weight_{Asset} * e(Return_{Asset} ) $$" )),
+        withMathJax(h2(HTML("$$ weight_{Asset} * \\mu_{Asset}  $$" ))),
         br(),
         h4("Sharpe Ratio"),
-        p("Ratio of portfolio's Expected Return to its Standard Deviation"),
-#        h2(HTML("$$ e(Return_{Asset} ) / \\sigma_{Asset} $$" )),
-        p("Technically this is simply a \"Return/Risk  ratio,\" which is not exactly the same as \"Sharpe Ratio,\" but the terms are frequently used interchangeably and  for the purpose of this application their meanings are similar enough. If you would like to know the precise definition of \"Sharpe Ratio,\" ", a(href = "http://web.stanford.edu/~wfsharpe/art/sr/sr.htm", "consult the source.")  ),
+        p("Ratio of Expected Return to Volatility"), 
+        withMathJax(h2(HTML("$$ \\mu_{Asset} / \\sigma_{Asset}  $$" ))),
+        p("Note this is not the true definition of a Sharpe Ratio; it is simply 
+          a \"Return/Risk  ratio.\" However in the vernacular of the investment 
+          world the terms are interchangeable and for the purpose of this
+          application their meanings are similar enough."),
+        p("If you would like to know the precise definition of \"Sharpe Ratio,\" ",
+          a(href = "http://web.stanford.edu/~wfsharpe/art/sr/sr.htm",
+            "consult the source.")  ),
         br()
         )
         )

@@ -1,8 +1,8 @@
 # server.R
 Asset <- c("US Stocks","Int'l Stocks","Bonds","REITs","Commodities")
 
-Volatility <- c(0.2, .25, .05, .35, .25)
-Expected_Return <- c(0.08, .07, .02, .07, .04)
+Volatility <- c(0.2, .25, .05, .25, .25)
+Expected_Return <- c(0.085, .08, .02, .075, .05)
 
 volDF <- data.frame(cbind(Volatility, Expected_Return))
 rownames(volDF) <- Asset
@@ -22,8 +22,9 @@ covariances <- correlations * (Volatility %*% t(Volatility))
 
 maxSharpe <- (solve(covariances, Expected_Return)/sum(solve(covariances, Expected_Return)))*100
 minVar <- ((solve(covariances)%*%rep(1, 5))[,1]/sum(solve(covariances)%*%rep(1, 5)))*100
-riskParity <- c(10.2983661893868, 7.61459754399543, 65.764613594701, 6.14343370496751,
-                10.1789889669479)
+riskParity <- c(10.0513601776988, 7.43196185269416, 64.187314312573,
+                8.39451719877827, 9.9348464582568) 
+
 
 # add RP vectors and values
 portfolioRP <- sum(riskParity)
@@ -79,8 +80,8 @@ portfolio_stdmaxSharpe <- sqrt(portfolio_variancemaxSharpe)/100
 
 risk_contributionsmaxSharpe <- contributionsmaxSharpe/portfolio_variancemaxSharpe
 
-axisLabels <- seq(0, 1.0, .05)
-returnLabels <-  seq(0, .10, .005)
+axisLabels <- seq(-2., 2., .2)
+returnLabels <-  seq(-.10, .10, .01)
 rrLabelsX <-  seq(0, 0.35, .05)
 rrLabelsY <-  seq(0, 0.10, .01)
 
@@ -127,19 +128,19 @@ shinyServer(function(input, output) {
   output$plot <- renderPlot({
     par(mfcol = c(1,3), oma = c(0.5, 5, 0.5, 0.5))
     barplot(t(weights()), horiz = TRUE, main = "Weight", ps = 12, 
-            cex.main = 1.5, xaxt = "n", col = "white", yaxt = "n", 
+            cex.main = 1.5, xaxt = "n", col = "#4F81BD", yaxt = "n", 
             mar = c(4, 20, 0.5, 0.5) + .1)
     axis(1, at = axisLabels, lab=paste0(axisLabels * 100, " %"), 
          las=TRUE, cex.axis=1, padj = 0.5)
     axis(2, at=c(0.85,2,3.15,4.3,5.45), lab = Asset , las=TRUE, lty = 0, 
          ps = 12, cex.axis = 1.5)
     barplot(t(risk_contributions()), 
-            main = "Risk Contribution", ps = 12, cex.main = 1.5, col = "red", xaxt = "n", 
+            main = "Risk Contribution", ps = 12, cex.main = 1.5, col = "#9BBB59", xaxt = "n", 
             yaxt = "n", horiz = TRUE, mar = c(4, 0.5, 0.5, 0.5) + .1)
     axis(1, at = axisLabels, lab=paste0(axisLabels * 100, " %"), 
          las=TRUE, cex.axis=1, padj = 0.5)
     barplot(t(return_contributions()), 
-            main = "Return Contribution", ps = 12, cex.main = 1.5, col = "black", xaxt = "n", 
+            main = "Return Contribution", ps = 12, cex.main = 1.5, col = "#FF9800", xaxt = "n", 
             yaxt = "n", horiz = TRUE, mar = c(4, 0.5, 0.5, 0.5) + .1)
     axis(1, at = returnLabels, lab=paste0(returnLabels * 100, " %"), 
          las=TRUE, cex.axis=1, padj = 0.5)
@@ -149,11 +150,13 @@ shinyServer(function(input, output) {
     plot(portfolio_std(), portfolio_return(), pch = 19, cex = 1.5, col = "red", 
          xlim = c(0, .35), ylim = c(0, 0.1), xlab = "Volatility 
          \n (Annualized standard deviation)", xaxt = "n", ylab = "Expected Return",
-         yaxt = "n", main = "Portfolio Expected Return \n vs. Risk", ps = 12, 
+         yaxt = "n", main = "Portfolio Expected Return vs. Risk", ps = 12, 
          cex.main = 1.5, mar = c(4,14,0.5,0.5) + .1,
          oma = c(4,4,0.5,0.5) + .1)
     points(Volatility, Expected_Return, pch = 19)
-    text(Volatility, Expected_Return, labels=Asset, cex= 1., pos=4)
+    text(Volatility[-c(2,4)], Expected_Return[-c(2,4)], labels=Asset[-c(2,4)], cex= 1., pos=2)
+    text(Volatility[4], Expected_Return[4], labels=Asset[4], cex= 1., pos=1)
+    text(Volatility[2], Expected_Return[2], labels=Asset[2], cex= 1., pos=3)
     text(portfolio_std(), portfolio_return(), labels="Portfolio", cex= 1.5, col = "red", pos=4)
     axis(1, at = rrLabelsX, lab=paste0(rrLabelsX * 100, " %"), las=TRUE)
     axis(2, at = rrLabelsY, lab=paste0(rrLabelsY * 100, " %"), las=TRUE)
@@ -162,19 +165,19 @@ shinyServer(function(input, output) {
   output$plotRP <- renderPlot({
     par(mfcol = c(1,3), oma = c(0.5, 5, 0.5, 0.5))
     barplot(t(weightsRP)/100, horiz = TRUE, main = "Weight", ps = 12, 
-            cex.main = 1.5, xaxt = "n", col = "white", yaxt = "n", 
+            cex.main = 1.5, xaxt = "n", col = "#4F81BD", yaxt = "n", 
             mar = c(4, 20, 0.5, 0.5) + .1)
     axis(1, at = axisLabels, lab=paste0(axisLabels * 100, " %"), 
          las=TRUE, cex.axis=1, padj = 0.5)
     axis(2, at=c(0.85,2,3.15,4.3,5.45), lab = Asset , las=TRUE, lty = 0, 
          ps = 12, cex.axis = 1.5)
     barplot(t(risk_contributionsRP), 
-            main = "Risk Contribution", ps = 12, cex.main = 1.5, col = "red", xaxt = "n", 
+            main = "Risk Contribution", ps = 12, cex.main = 1.5, col = "#9BBB59", xaxt = "n", 
             yaxt = "n", horiz = TRUE, mar = c(4, 0.5, 0.5, 0.5) + .1)
     axis(1, at = axisLabels, lab=paste0(axisLabels * 100, " %"), 
          las=TRUE, cex.axis=1, padj = 0.5)
     barplot(t(return_RP/100), 
-            main = "Return Contribution", ps = 12, cex.main = 1.5, col = "black", xaxt = "n", 
+            main = "Return Contribution", ps = 12, cex.main = 1.5, col = "#FF9800", xaxt = "n", 
             yaxt = "n", horiz = TRUE, mar = c(4, 0.5, 0.5, 0.5) + .1)
     axis(1, at = returnLabels, lab=paste0(returnLabels * 100, " %"), 
          las=TRUE, cex.axis=1, padj = 0.5)
@@ -185,11 +188,13 @@ shinyServer(function(input, output) {
     plot(portfolio_stdRP, portfolio_returnRP,  pch = 19, cex = 1.5, col = "red", 
          xlim = c(-0.05, .40), ylim = c(0, 0.1), xlab = "\n \n Volatility 
          \n (Annualized standard deviation)", xaxt = "n", ylab = "Expected Return",
-         yaxt = "n", main = "Portfolio Expected Return \n vs. Risk", ps = 12, 
+         yaxt = "n", main = "Portfolio Expected Return vs. Risk", ps = 12, 
          cex.main = 1.5, mar = c(4,14,0.5,0.5) + .1,
          oma = c(4,4,0.5,0.5) + .1)
     points(Volatility, Expected_Return, pch = 19)
-    text(Volatility, Expected_Return, labels=Asset, cex= 1., pos=4)
+    text(Volatility[-c(2,4)], Expected_Return[-c(2,4)], labels=Asset[-c(2,4)], cex= 1., pos=2)
+    text(Volatility[4], Expected_Return[4], labels=Asset[4], cex= 1., pos=1)
+    text(Volatility[2], Expected_Return[2], labels=Asset[2], cex= 1., pos=3)
     text(portfolio_stdRP, portfolio_returnRP, labels="Risk Parity", cex= 1.5, col = "red", pos=4)
     axis(1, at = rrLabelsX, lab=paste0(rrLabelsX * 100, " %"), las=TRUE)
     axis(2, at = rrLabelsY, lab=paste0(rrLabelsY * 100, " %"), las=TRUE)
@@ -198,19 +203,19 @@ shinyServer(function(input, output) {
   output$plotminVar <- renderPlot({
     par(mfcol = c(1,3), oma = c(0.5, 5, 0.5, 0.5))
     barplot(t(weightsminVar/100), horiz = TRUE, main = "Weight", ps = 12, 
-            cex.main = 1.5, xaxt = "n", col = "white", yaxt = "n", 
+            cex.main = 1.5, xaxt = "n", col = "#4F81BD", yaxt = "n", 
             mar = c(4, 20, 0.5, 0.5) + .1)
     axis(1, at = axisLabels, lab=paste0(axisLabels * 100, " %"), 
          las=TRUE, cex.axis=1, padj = 0.5)
     axis(2, at=c(0.85,2,3.15,4.3,5.45), lab = Asset , las=TRUE, lty = 0, 
          ps = 12, cex.axis = 1.5)
     barplot(t(risk_contributionsminVar), 
-            main = "Risk Contribution", ps = 12, cex.main = 1.5, col = "red", xaxt = "n", 
+            main = "Risk Contribution", ps = 12, cex.main = 1.5, col = "#9BBB59", xaxt = "n", 
             yaxt = "n", horiz = TRUE, mar = c(4, 0.5, 0.5, 0.5) + .1)
     axis(1, at = axisLabels, lab=paste0(axisLabels * 100, " %"), 
          las=TRUE, cex.axis=1, padj = 0.5)
     barplot(t(return_minVar/100), 
-            main = "Return Contribution", ps = 12, cex.main = 1.5, col = "black", xaxt = "n", 
+            main = "Return Contribution", ps = 12, cex.main = 1.5, col = "#FF9800", xaxt = "n", 
             yaxt = "n", horiz = TRUE, mar = c(4, 0.5, 0.5, 0.5) + .1)
     axis(1, at = returnLabels, lab=paste0(returnLabels * 100, " %"), 
          las=TRUE, cex.axis=1, padj = 0.5)
@@ -220,11 +225,13 @@ shinyServer(function(input, output) {
     plot(portfolio_stdminVar, portfolio_returnminVar,  pch = 19, cex = 1.5, col = "red",  
          xlim = c(-0.05, .4), ylim = c(0, 0.1), xlab = "Volatility 
          \n (Annualized standard deviation)", xaxt = "n", ylab = "Expected Return",
-         yaxt = "n", main = "Portfolio Expected Return \n vs. Risk", ps = 12, 
+         yaxt = "n", main = "Portfolio Expected Return vs. Risk", ps = 12, 
          cex.main = 1.5, mar = c(4,14,0.5,0.5) + .1,
          oma = c(4,4,0.5,0.5) + .1)
     points(Volatility, Expected_Return, pch = 19)
-    text(Volatility, Expected_Return, labels=Asset, cex= 1., pos=4)
+    text(Volatility[-c(2,4)], Expected_Return[-c(2,4)], labels=Asset[-c(2,4)], cex= 1., pos=2)
+    text(Volatility[4], Expected_Return[4], labels=Asset[4], cex= 1., pos=1)
+    text(Volatility[2], Expected_Return[2], labels=Asset[2], cex= 1., pos=3)
     text(portfolio_stdminVar, portfolio_returnminVar, labels="MinVar", cex= 1.5, col = "red", pos=4)
     axis(1, at = rrLabelsX, lab=paste0(rrLabelsX * 100, " %"), las=TRUE)
     axis(2, at = rrLabelsY, lab=paste0(rrLabelsY * 100, " %"), las=TRUE)
@@ -233,19 +240,19 @@ shinyServer(function(input, output) {
   output$plotmaxSharpe <- renderPlot({
     par(mfcol = c(1,3), oma = c(0.5, 5, 0.5, 0.5))
     barplot(t(weightsmaxSharpe/100), horiz = TRUE, main = "Weight", ps = 12, 
-            cex.main = 1.5, xaxt = "n", col = "white", yaxt = "n", 
+            cex.main = 1.5, xaxt = "n", col = "#4F81BD", yaxt = "n", 
             mar = c(4, 20, 0.5, 0.5) + .1)
     axis(1, at = axisLabels, lab=paste0(axisLabels * 100, " %"), 
          las=TRUE, cex.axis=1, padj = 0.5)
     axis(2, at=c(0.85,2,3.15,4.3,5.45), lab = Asset , las=TRUE, lty = 0, 
          ps = 12, cex.axis = 1.5)
     barplot(t(risk_contributionsmaxSharpe), 
-            main = "Risk Contribution", ps = 12, cex.main = 1.5, col = "red", xaxt = "n", 
+            main = "Risk Contribution", ps = 12, cex.main = 1.5, col = "#9BBB59", xaxt = "n", 
             yaxt = "n", horiz = TRUE, mar = c(4, 0.5, 0.5, 0.5) + .1)
     axis(1, at = axisLabels, lab=paste0(axisLabels * 100, " %"), 
          las=TRUE, cex.axis=1, padj = 0.5)
     barplot(t(return_maxSharpe/100), 
-            main = "Return Contribution", ps = 12, cex.main = 1.5, col = "black", xaxt = "n", 
+            main = "Return Contribution", ps = 12, cex.main = 1.5, col = "#FF9800", xaxt = "n", 
             yaxt = "n", horiz = TRUE, mar = c(4, 0.5, 0.5, 0.5) + .1)
     axis(1, at = returnLabels, lab=paste0(returnLabels * 100, " %"), 
          las=TRUE, cex.axis=1, padj = 0.5)
@@ -255,11 +262,13 @@ shinyServer(function(input, output) {
     plot(portfolio_stdmaxSharpe, portfolio_returnmaxSharpe,  pch = 19, cex = 1.5, col = "red", 
          xlim = c(-0.05, .4), ylim = c(0, 0.1), xlab = "Volatility 
          \n (Annualized standard deviation)", xaxt = "n", ylab = "Expected Return",
-         yaxt = "n", main = "Portfolio Expected Return \n vs. Risk", ps = 12, 
+         yaxt = "n", main = "Portfolio Expected Return vs. Risk", ps = 12, 
          cex.main = 1.5, mar = c(4,14,0.5,0.5) + .1,
          oma = c(4,4,0.5,0.5) + .1)
     points(Volatility, Expected_Return, pch = 19)
-    text(Volatility, Expected_Return, labels=Asset, cex= 1., pos=4)
+    text(Volatility[-c(2,4)], Expected_Return[-c(2,4)], labels=Asset[-c(2,4)], cex= 1., pos=2)
+    text(Volatility[4], Expected_Return[4], labels=Asset[4], cex= 1., pos=1)
+    text(Volatility[2], Expected_Return[2], labels=Asset[2], cex= 1., pos=3)
     text(portfolio_stdmaxSharpe, portfolio_returnmaxSharpe, labels="Max Sharpe", cex= 1.5, col = "red", pos=4)
     axis(1, at = rrLabelsX, lab=paste0(rrLabelsX * 100, " %"), las=TRUE)
     axis(2, at = rrLabelsY, lab=paste0(rrLabelsY * 100, " %"), las=TRUE)
