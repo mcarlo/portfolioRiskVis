@@ -1,7 +1,7 @@
 library(shiny)
 withMathJax()
 shinyUI(fluidPage(
-  titlePanel("portfolioRiskViz"),
+  titlePanel("Portfolio Risk Visualizer"),
   h1("Visualize portfolio risk dynamics", align = "center"),
   tags$head(includeScript("google-analytics.js")),
   tags$head( tags$script(src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML-full", type = 'text/javascript'),
@@ -16,8 +16,8 @@ shinyUI(fluidPage(
   
   sidebarLayout(
     sidebarPanel(
-      p("Change the Asset Values below to see how the riskiness and risk composition
-of the portfolio change in the Portfolio Composition panel."),
+      p("Change the Asset Values below to see how the portfolio's risk composition
+changes in the Portfolio Composition panel."),
       p("The other panels are for background and illustration purposes; they will not change."),
       
       h5("Asset values"),
@@ -55,8 +55,8 @@ of the portfolio change in the Portfolio Composition panel."),
                  p("This panel is not reactive, it is for illustration purposes
                    only. The weights were selected so as to minimize portfolio
                    variance."),
-                 p("In unconstrained Minimum Variance Portfolios, the ",
-                   strong("Weights equal the Contributions to Risk."),
+                 p("In unconstrained Minimum Variance Portfolios, notice the ",
+                   strong("Weights equal the Risk Contribution."),
                    align = "left"), 
                  
                  plotOutput("plotminVar"),
@@ -72,15 +72,17 @@ of the portfolio change in the Portfolio Composition panel."),
                    the portfolio's ratio of expected return to volatility."),
                  p("In unconstrained Maximum Sharpe Ratio Portfolios, ", 
                    strong("the Contributions to Risk are proportionate to
-                          Contributions to Return")," which is why the Risk
+                          Contributions to Return")," which is why you might notice the Risk
                    Contribution pattern and Return Contribution pattern are
                    identical.", align = "left"), 
                  
                  
                  plotOutput("plotmaxSharpe"),
                  
-                 plotOutput("plotmaxSharpe2")),
-        
+                 plotOutput("plotmaxSharpe2"),
+        h5("While in this example the portfolio's volatility happens to be less than that
+           of its least risky asset, for Maximum Sharpe Ratio portfolios in general that is not always the case.", align = "left")),
+      
         tabPanel("Risk Parity portfolio", 
                  p("This panel is not reactive, it is for illustration
                     purposes only. The weights were selected such that the
@@ -99,6 +101,12 @@ of the portfolio change in the Portfolio Composition panel."),
                  tableOutput("table2")),
         tabPanel("Definitions", 
                  
+                 h4("Weight"),
+                 p("Asset Value divided by the greater of 1 and the sum of all Asset Values"),
+                 
+                 withMathJax(h2(HTML("$$ Value_{Asset} / max(1, \\Sigma 
+                                     Value_{Asset_{i}}) $$" ))),
+                 br(),
                  h4("Risk Contribution"),
                  p("Product of Asset's Weight and its covariance with the
                    Portfolio, scaled by the Portfolio's variance"),
@@ -113,10 +121,10 @@ of the portfolio change in the Portfolio Composition panel."),
         h4("Sharpe Ratio"),
         p("Ratio of Expected Return to Volatility"), 
         withMathJax(h2(HTML("$$ \\mu_{Asset} / \\sigma_{Asset}  $$" ))),
-        p("Note this is not the true definition of a Sharpe Ratio; it is simply 
-          a \"Return/Risk  ratio.\" However in the vernacular of the investment 
-          world the terms are interchangeable and for the purpose of this
-          application their meanings are similar enough."),
+        p("Note this is simply a \"Return/Risk ratio,\" which is not exactly the
+          true definition of a Sharpe Ratio. However in the vernacular of the
+          investment world the terms are interchangeable and for the purpose of
+          this application their meanings are similar enough."),
         p("If you would like to know the precise definition of \"Sharpe Ratio,\" ",
           a(href = "http://web.stanford.edu/~wfsharpe/art/sr/sr.htm",
             "consult the source.")  ),
@@ -126,5 +134,6 @@ of the portfolio change in the Portfolio Composition panel."),
                  )
   ),
 wellPanel(
-  p("This application is for illustration purposes only. It does not constitute investment advice. The assumptions and results are meant to be educational only. Do not rely on this application for your own investment decisions."))  
+  p("This application is for illustration purposes only. It does not constitute investment advice. The assumptions and results are meant to be educational only. Do not rely on this application for your own investment decisions."),
+  p("Questions? Contact the author: ", a(href = "mailto:tom@portfoliowizards.com","tom@portfoliowizards.com")))  
 ))

@@ -1,0 +1,7 @@
+Title: portfolioRiskVis
+Author: Thomas M. Anichini
+AuthorUrl: http://www.portfoliowizards.com/
+License: MIT
+DisplayMode: Normal
+Tags: risk,risk-contribution,visualize
+Type: Shiny

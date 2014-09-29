@@ -1,4 +1,2 @@
-portfolioRiskVis
-================
 
-App that illustrates the interaction between portfolio weights and contributions to portfolio risk
+This app illustrates the interactions among portfolio weights, risk, return, and contributions to portfolio risk and return.
