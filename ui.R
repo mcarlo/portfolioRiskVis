@@ -1,17 +1,17 @@
 library(shiny)
 withMathJax()
 shinyUI(fluidPage(
-  titlePanel("Portfolio Risk Visualizer"),
-  h1("Visualize portfolio risk dynamics", align = "center"),
+  #titlePanel("Portfolio Risk Visualizer"),
+  #h1("Visualize portfolio risk dynamics", align = "center"),
   tags$head(includeScript("google-analytics.js")),
   tags$head( tags$script(src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML-full", type = 'text/javascript'),
              tags$script( "MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});", type='text/x-mathjax-config')
   ),  
-  wellPanel(
-    p("This application illustrates how the risk in a portfolio changes when you 
-              change the asset allocation.")
+  #wellPanel(
+  #  p("This application illustrates how the risk in a portfolio changes when you 
+  #            change the asset allocation.")
     
-),
+#),
   
   
   sidebarLayout(
