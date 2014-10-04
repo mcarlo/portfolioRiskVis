@@ -131,19 +131,19 @@ shinyServer(function(input, output) {
             cex.main = 1.5, xaxt = "n", col = "#4F81BD", yaxt = "n", 
             mar = c(4, 20, 0.5, 0.5) + .1)
     axis(1, at = axisLabels, lab=paste0(axisLabels * 100, " %"), 
-         las=TRUE, cex.axis=1, padj = 0.5)
+         las=TRUE, cex.axis=1.5, padj = 0.5)
     axis(2, at=c(0.85,2,3.15,4.3,5.45), lab = Asset , las=TRUE, lty = 0, 
          ps = 12, cex.axis = 1.5)
     barplot(t(risk_contributions()), 
             main = "Risk Contribution", ps = 12, cex.main = 1.5, col = "#9BBB59", xaxt = "n", 
             yaxt = "n", horiz = TRUE, mar = c(4, 0.5, 0.5, 0.5) + .1)
     axis(1, at = axisLabels, lab=paste0(axisLabels * 100, " %"), 
-         las=TRUE, cex.axis=1, padj = 0.5)
+         las=TRUE, cex.axis=1.5, padj = 0.5)
     barplot(t(return_contributions()), 
             main = "Return Contribution", ps = 12, cex.main = 1.5, col = "#FF9800", xaxt = "n", 
             yaxt = "n", horiz = TRUE, mar = c(4, 0.5, 0.5, 0.5) + .1)
     axis(1, at = returnLabels, lab=paste0(returnLabels * 100, " %"), 
-         las=TRUE, cex.axis=1, padj = 0.5)
+         las=TRUE, cex.axis=1.5, padj = 0.5)
   })
   
   output$plot2 <- renderPlot({
